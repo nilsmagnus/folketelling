@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,27 +13,20 @@ var (
 	repeat int
 )
 
-func repeatHandler(c *gin.Context) {
+func ssbHandler(c *gin.Context) {
 	var buffer bytes.Buffer
+	apiNumber := c.Params.ByName("number")
 	for i := 0; i < repeat; i++ {
-		buffer.WriteString("Hello from Go!\n")
+		buffer.WriteString(apiNumber)
 	}
 	c.String(http.StatusOK, buffer.String())
 }
 
 func main() {
-	var err error
 	port := os.Getenv("PORT")
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
-	}
-
-	tStr := os.Getenv("REPEAT")
-	repeat, err = strconv.Atoi(tStr)
-	if err != nil {
-		log.Printf("Error converting $REPEAT to an int: %q - Using default\n", err)
-		repeat = 5
 	}
 
 	router := gin.New()
@@ -46,7 +38,7 @@ func main() {
 		c.HTML(http.StatusOK, "index.tmpl.html", nil)
 	})
 
-	router.GET("/repeat", repeatHandler)
+	router.GET("/ssbapi/:number", ssbHandler)
 
 	router.Run(":" + port)
 }
