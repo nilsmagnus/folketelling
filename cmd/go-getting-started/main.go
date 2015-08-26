@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -14,12 +15,27 @@ var (
 )
 
 func ssbHandler(c *gin.Context) {
-	var buffer bytes.Buffer
 	apiNumber := c.Params.ByName("number")
-	for i := 0; i < repeat; i++ {
-		buffer.WriteString(apiNumber)
+
+	var urlBuffer bytes.Buffer
+	urlBuffer.WriteString("http://data.ssb.no/api/v0/dataset/")
+	urlBuffer.WriteString(apiNumber)
+	urlBuffer.WriteString(".json")
+
+	ssbResponse, err := http.Get(urlBuffer.String())
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
 	}
-	c.String(http.StatusOK, buffer.String())
+	defer ssbResponse.Body.Close()
+	if ssbResponse.StatusCode != http.StatusOK {
+		c.String(ssbResponse.StatusCode, string(ssbResponse.Status))
+	} else {
+		contents, err := ioutil.ReadAll(ssbResponse.Body)
+		if err != nil {
+			c.String(http.StatusInternalServerError, err.Error())
+		}
+		c.String(http.StatusOK, string(contents))
+	}
 }
 
 func main() {
