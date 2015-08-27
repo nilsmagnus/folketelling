@@ -1,6 +1,6 @@
 
 # folketelling
 
-Learning golang and angular2, step by step.
+Learning golang and a bit of angular2.js, step by step.
 
 Deployed at https://folketelling.herokuapp.com/
