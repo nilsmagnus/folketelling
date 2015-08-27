@@ -24,6 +24,7 @@ func ssbHandler(c *gin.Context) {
 
 	ssbResponse, err := http.Get(urlBuffer.String())
 	if err != nil {
+		c.Writer.Header().Set("X-Before", "Foo")
 		c.String(http.StatusInternalServerError, err.Error())
 	}
 	defer ssbResponse.Body.Close()
