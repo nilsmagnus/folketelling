@@ -1,14 +1,30 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <script src="https://github.jspm.io/jmcriffey/bower-traceur-runtime@0.0.87/traceur-runtime.js"></script>
-    <script src="https://jspm.io/system@0.16.js"></script>
-    <script src="https://code.angularjs.org/2.0.0-alpha.26/angular2.dev.js"></script>
-  </head>
-  <body>
-    <my-app></my-app>
-    <script>
-      System.import('static/main');
-    </script>
-  </body>
+{{template "header.tmpl.html"}}
+<script type="text/javascript" src="js/arbeid.js"></script>
+
+<body>
+  {{template "nav.tmpl.html"}}
+  <div class="container">
+    <h1><div id="1052label"></h1>
+      <h2>Antall arbeidsløse i 1000<h2>
+      <canvas id="1052chart_kilo" width="1024" height="400"></canvas>
+      <h2>Antall arbeidsløse i prosent</h2>
+      <canvas id="1052chart_percent" width="1024" height="400"></canvas>
+  </div>
+
+  <div class="jumbotron text-center">
+    <div class="container">
+      <a href="/" class="lang-logo">
+        <img src="/static/lang-logo.png">
+      </a>
+      <h1>Getting Started with Go on Heroku</h1>
+      <p>This is a sample Go application deployed to Heroku. It's a reasonably simple app - but a good foundation for understanding how to get the most out of the Heroku platform.</p>
+      <a type="button" class="btn btn-lg btn-default" href="https://devcenter.heroku.com/articles/getting-started-with-go">
+        <span class="glyphiconglyphicon-flash"></span> Getting Started with Go</a>
+      <a type="button" class="btn btn-lg btn-primary" href="https://github.com/heroku/go-getting-started">
+        <span class="glyphiconglyphicon-download"></span> Source on GitHub</a>
+    </div>
+  </div>
+</body>
+
 </html>

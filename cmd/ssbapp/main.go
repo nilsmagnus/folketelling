@@ -10,10 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	repeat int
-)
-
 func ssbHandler(c *gin.Context) {
 	apiNumber := c.Params.ByName("number")
 
@@ -24,7 +20,6 @@ func ssbHandler(c *gin.Context) {
 
 	ssbResponse, err := http.Get(urlBuffer.String())
 	if err != nil {
-		c.Writer.Header().Set("X-Before", "Foo")
 		c.String(http.StatusInternalServerError, err.Error())
 	}
 	defer ssbResponse.Body.Close()
@@ -33,11 +28,14 @@ func ssbHandler(c *gin.Context) {
 	} else {
 		contents, err := ioutil.ReadAll(ssbResponse.Body)
 		if err != nil {
+			c.Header("Content-Type", "application/json")
 			c.String(http.StatusInternalServerError, err.Error())
 		}
 		c.String(http.StatusOK, string(contents))
 	}
 }
+
+var ()
 
 func main() {
 	port := os.Getenv("PORT")
@@ -48,8 +46,10 @@ func main() {
 
 	router := gin.New()
 	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
+	router.Static("/js", "js")
 	router.Static("/static", "static")
+
+	router.LoadHTMLGlob("templates/*.tmpl.html")
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl.html", nil)
