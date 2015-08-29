@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,12 +13,9 @@ import (
 func ssbHandler(c *gin.Context) {
 	apiNumber := c.Params.ByName("number")
 
-	var urlBuffer bytes.Buffer
-	urlBuffer.WriteString("http://data.ssb.no/api/v0/dataset/")
-	urlBuffer.WriteString(apiNumber)
-	urlBuffer.WriteString(".json")
+	apiURL := fmt.Sprint("http://data.ssb.no/api/v0/dataset/", apiNumber, ".json")
 
-	ssbResponse, err := http.Get(urlBuffer.String())
+	ssbResponse, err := http.Get(apiURL)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -49,10 +46,15 @@ func main() {
 	router.Static("/js", "js")
 	router.Static("/static", "static")
 
-	router.LoadHTMLGlob("templates/*.tmpl.html")
+	router.LoadHTMLGlob("templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+
+	router.GET("/pages/:page", func(c *gin.Context) {
+		page := fmt.Sprint(c.Params.ByName("page"), ".html")
+		c.HTML(http.StatusOK, page, nil)
 	})
 
 	router.GET("/ssbapi/:number", ssbHandler)

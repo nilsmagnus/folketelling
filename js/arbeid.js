@@ -12,22 +12,20 @@ function makeGraph(labels, values, element) {
     }]
   };
   var myBarChart = new Chart(ctx).Bar(chartData);
-
 }
 
-
 function initArbeid() {
-  console.log("arbeid gjør så mangt");
 
-  $.getJSON("ssbapi/1052", function(apidata) {
+  $.getJSON("../ssbapi/1052", function(apidata) {
     $("#1052label").text(apidata.dataset.label);
 
     var labels = new Array();
+    var percent = new Array();
+    var kilo = new Array();
+
     for (label in apidata.dataset.dimension.Tid.category.label) {
       labels.push(label.substr(0,4) + "/"+label.substr(5,6));
     }
-    var percent = new Array();
-    var kilo = new Array();
 
     apidata.dataset.value.forEach(function(element, index) {
       if ((index % 2) == 0) {
@@ -36,11 +34,11 @@ function initArbeid() {
         percent.push(element);
       }
     });
+
     makeGraph(labels, kilo, $("#1052chart_kilo"));
     makeGraph(labels, percent, $("#1052chart_percent"));
+
   });
 }
-
-
 
 $(document).ready(initArbeid);

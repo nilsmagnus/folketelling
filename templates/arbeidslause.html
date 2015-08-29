@@ -1,20 +1,21 @@
 <html>
 {{template "header.tmpl.html"}}
-<script type="text/javascript" src="js/arbeid.js"></script>
+<script type="text/javascript" src="../js/arbeid.js"></script>
 
 <body>
   {{template "nav.tmpl.html"}}
   <div class="container">
     <h1>
-      <div id="1052label">
+      <div id="1052label"></div>
     </h1>
     <h2>Antall arbeidsløse i 1000</h2>
     <canvas id="1052chart_kilo" width="1024" height="400"></canvas>
     <h2>Antall arbeidsløse i prosent</h2>
     <canvas id="1052chart_percent" width="1024" height="400"></canvas>
-    </div>
+  </div>
   </div>
 
 </body>
-  {{template "footer.tmpl.html"}}
+{{template "footer.tmpl.html"}}
+
 </html>
