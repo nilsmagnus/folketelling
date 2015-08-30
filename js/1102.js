@@ -19,30 +19,46 @@ function init1102() {
   $.getJSON("../ssbapi/1102", function(apidata) {
     $("#label").text(apidata.dataset.label);
 
-    var labels = new Array();
+    var contents = new Array();
     var regionStats = {};
+    var regions = new Array();
 
-    for (var i =1; i<21;i++ ) {
-      if(i==13) i++;
-      var regionName = i+" "+ apidata.dataset.dimension.Region.category.label[(i<10?"0":"")+i];
+    var contentsCount = apidata.dataset.dimension.size[1];
+    var regionCount = apidata.dataset.dimension.size[0];
+    for (var i = 1; i < regionCount + 1; i++) {
+      if (i == 13) i++;
+      var regionName = i + " " + apidata.dataset.dimension.Region.category.label[(i < 10 ? "0" : "") + i];
+      regions.push(regionName);
       regionStats[regionName] = new Array();
     }
 
     for (label in apidata.dataset.dimension.ContentsCode.category.label) {
-      labels.push(apidata.dataset.dimension.ContentsCode.category.label[label]);
+      contents.push(apidata.dataset.dimension.ContentsCode.category.label[label]);
+    }
+
+    var contentsCount = apidata.dataset.dimension.size[1];
+    for (var contentIndex = 0; contentIndex < contents.length; contentIndex++) {
+      var contentStats = new Array();
+      for (var regionIndex = 0; regionIndex < regionCount; regionIndex++) {
+        var dataIndex = contentIndex + regionIndex * contentsCount;
+        contentStats.push(apidata.dataset.value[dataIndex]);
+      }
+      var contentChartElement = $("<canvas width='1024' height='400'></canvas>");
+      $("#contentcharts").append("<h3>" + contents[contentIndex] + "</h3>");
+      $("#contentcharts").append(contentChartElement);
+      makeGraph(regions, contentStats, contentChartElement);
     }
 
     var regionNumber = 0;
     for (key in regionStats) {
-      var contentsCount = apidata.dataset.dimension.size[1];
       for (var contentIndex = 0; contentIndex < contentsCount; contentIndex++) {
         var dataIndex = contentIndex + contentsCount * regionNumber;
         regionStats[key].push(apidata.dataset.value[dataIndex]);
       }
       var regionChartElement = $("<canvas width='1024' height='400'></canvas>");
-      $("#charts").append("<h2>" + key + "</h2>");
+      $("#charts").append("<h3>" + key + "</h3>");
       $("#charts").append(regionChartElement);
-      makeGraph(labels, regionStats[key], regionChartElement);
+      makeGraph(contents, regionStats[key], regionChartElement);
       regionNumber++;
     }
 
