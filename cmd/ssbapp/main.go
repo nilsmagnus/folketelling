@@ -27,8 +27,10 @@ func ssbHandler(c *gin.Context) {
 		if err != nil {
 			c.Header("Content-Type", "application/json")
 			c.String(http.StatusInternalServerError, err.Error())
+		} else{
+			c.Header("Content-Type", "application/json")
+			c.String(http.StatusOK, string(contents))
 		}
-		c.String(http.StatusOK, string(contents))
 	}
 }
 
