@@ -12,21 +12,27 @@ import (
 
 func ssbHandler(c *gin.Context) {
 	apiNumber := c.Params.ByName("number")
-
 	apiURL := fmt.Sprint("http://data.ssb.no/api/v0/dataset/", apiNumber, ".json")
 
 	ssbResponse, err := http.Get(apiURL)
+
 	if err != nil {
+		// could not read ssb for some reason
 		c.String(http.StatusInternalServerError, err.Error())
+		return
 	}
+
 	defer ssbResponse.Body.Close()
+
 	if ssbResponse.StatusCode != http.StatusOK {
 		c.String(ssbResponse.StatusCode, string(ssbResponse.Status))
 	} else {
 		contents, err := ioutil.ReadAll(ssbResponse.Body)
 		if err != nil {
+			// Something went wrong when parsing the httpresponse from ssb
 			c.String(http.StatusInternalServerError, err.Error())
-		} else{
+		} else {
+			// Success, set header type to json and write the response from ssb
 			c.Writer.Header().Set("Content-Type", "application/json")
 			c.String(http.StatusOK, string(contents))
 		}
