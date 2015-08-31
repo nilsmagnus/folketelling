@@ -25,10 +25,9 @@ func ssbHandler(c *gin.Context) {
 	} else {
 		contents, err := ioutil.ReadAll(ssbResponse.Body)
 		if err != nil {
-			c.Header("Content-Type", "application/json")
 			c.String(http.StatusInternalServerError, err.Error())
 		} else{
-			c.Header("Content-Type", "application/json")
+			c.Writer.Header().Set("Content-Type", "application/json")
 			c.String(http.StatusOK, string(contents))
 		}
 	}
